@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .vote-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .party-button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vote for Your Party</h1>
+    <div>
+        <button class="party-button" onclick="vote('Party A')">Vote for Party A</button>
+        <button class="party-button" onclick="vote('Party B')">Vote for Party B</button>
+        <button class="party-button" onclick="vote('Party C')">Vote for Party C</button>
+    </div>
+    <h2>Vote Results</h2>
+    <button class="vote-button" onclick="resetVotes()">Reset Votes</button>
+    <h2>Vote Results</h2>
+    <div id="results"></div>
+
+    <script>
+        // Function to send the vote
+        function vote(party) {
+            fetch('http://localhost:5000/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ party: party })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                getVotes(); // Update the results after sending the vote
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Function to get all votes
+        function getVotes() {
+            fetch('http://localhost:5000/votes')
+            .then(response => response.json())
+            .then(data => {
+                let resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = ''; // Clear old results
+                data.forEach(row => {
+                    const partyDiv = document.createElement('div');
+                    partyDiv.innerHTML = `${row.party}: ${row.votes_count} votes`;
+                    resultsDiv.appendChild(partyDiv);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Get the initial results when the page loads
+        getVotes();
+        // Function to reset votes
+function resetVotes() {
+    fetch('http://localhost:5000/reset', {
+        method: 'POST'
+    })
+    .then(response => response.text())
+    .then(message => {
+        console.log(message);
+        getVotes(); // Update results after resetting votes
+    })
+    .catch(error => console.error('Error:', error));
+}
+    </script>
+</body>
+</html>
