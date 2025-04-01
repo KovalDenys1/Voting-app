@@ -1,4 +1,5 @@
 let token = null;
+let selectedParty = null;
 
 async function register() {
     const username = document.getElementById('register-username').value;
@@ -25,8 +26,6 @@ async function login() {
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
 
-    console.log('Login request:', { username, password });  // Логируем данные
-
     try {
         const response = await fetch('http://localhost:5000/login', {
             method: 'POST',
@@ -36,17 +35,17 @@ async function login() {
             body: JSON.stringify({ username, password }),
         });
 
-        const result = await response.json();  // Пытаемся парсить ответ как JSON
+        const result = await response.json();
 
         if (response.ok) {
             token = result.token;
             alert('Login successful');
-            showVoteForm();  // Здесь вызываем функцию, которая покажет форму для голосования
+            showVoteForm();
         } else {
             alert(result.message || 'Login failed');
         }
     } catch (error) {
-        alert('Error: ' + error.message);  // В случае ошибки на клиенте
+        alert('Error: ' + error.message);
     }
 }
 
@@ -68,7 +67,7 @@ async function vote(party) {
     const result = await response.json();
 
     if (response.ok) {
-        alert('Vote successfully recorded');
+        alert(result.message || 'Vote successfully recorded');
     } else {
         alert(result.message || 'Failed to vote');
     }

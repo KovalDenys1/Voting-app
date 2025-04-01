@@ -10,12 +10,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Добавляем middleware для обработки JSON
+// Adding middleware to handle JSON
 app.use(express.json());
 
-// Настройки CORS
+// CORS settings
 app.use(cors({
-    origin: 'http://127.0.0.1:5500',  // Убедись, что правильно указал порт для Live Server
+    origin: 'http://127.0.0.1:5500',  // Make sure to specify the correct port for Live Server
 }));
 
 const client = new Client({
@@ -30,7 +30,7 @@ client.connect()
   .then(() => console.log('Connected to PostgreSQL'))
   .catch(err => console.error('Connection error', err.stack));
 
-// Регистрация нового пользователя
+// Registering a new user
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -51,11 +51,11 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// В начале сервера
+// At the start of the server
 dotenv.config();
-console.log(process.env.JWT_SECRET);  // Проверяем значение JWT_SECRET
+console.log(process.env.JWT_SECRET);  // Check the value of JWT_SECRET
 
-// Логика авторизации
+// Authorization logic
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -75,7 +75,7 @@ app.post('/login', async (req, res) => {
             return res.status(400).send('Invalid password');
         }
 
-        // Генерация токена
+        // Token generation
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
     } catch (err) {
@@ -84,11 +84,9 @@ app.post('/login', async (req, res) => {
     }
 });
 
-
-
-// Защищенный маршрут для голосования
+// Protected route for voting
 app.post('/vote', async (req, res) => {
-    const token = req.headers['authorization']?.split(' ')[1];  // Пример: 'Bearer <token>'
+    const token = req.headers['authorization']?.split(' ')[1];  // Example: 'Bearer <token>'
     
     if (!token) {
         return res.status(401).send('Access denied');
@@ -103,33 +101,33 @@ app.post('/vote', async (req, res) => {
             return res.status(400).send('Party is required');
         }
 
-        // Проверка, голосовал ли пользователь
+        // Check if the user has already voted
         const voteCheck = await client.query('SELECT * FROM votes WHERE user_id = $1', [userId]);
 
         if (voteCheck.rows.length > 0) {
-            return res.status(400).send('You have already voted');
+            return res.status(400).json({ message: 'You have already voted' });  // Send a message saying that the user has already voted
         }
 
-        // Запись голоса в базу данных
+        // Record the vote in the database
         await client.query(
             'INSERT INTO votes (user_id, party) VALUES ($1, $2)',
             [userId, party]
         );
 
-        // Обновление количества голосов для партии
+        // Update the vote count for the party
         await client.query(
             'UPDATE votes SET votes_count = votes_count + 1 WHERE party = $1',
             [party]
         );
 
-        res.send('Vote successfully recorded');
+        res.json({ message: 'Vote successfully recorded' });  // Send confirmation that the vote was successfully recorded
     } catch (err) {
         console.error(err);
         res.status(500).send('Error processing vote');
     }
 });
 
-// Запуск сервера
+// Starting the server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
