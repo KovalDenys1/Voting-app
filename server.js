@@ -51,10 +51,6 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// At the start of the server
-dotenv.config();
-console.log(process.env.JWT_SECRET);  // Check the value of JWT_SECRET
-
 // Authorization logic
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -101,11 +97,17 @@ app.post('/vote', async (req, res) => {
             return res.status(400).send('Party is required');
         }
 
+        // Check if the party exists in the database
+        const partyCheck = await client.query('SELECT * FROM parties WHERE name = $1', [party]);
+        if (partyCheck.rows.length === 0) {
+            return res.status(400).send('Party not found');
+        }
+
         // Check if the user has already voted
         const voteCheck = await client.query('SELECT * FROM votes WHERE user_id = $1', [userId]);
 
         if (voteCheck.rows.length > 0) {
-            return res.status(400).json({ message: 'You have already voted' });  // Send a message saying that the user has already voted
+            return res.status(400).json({ message: 'You have already voted' });
         }
 
         // Record the vote in the database
@@ -114,13 +116,7 @@ app.post('/vote', async (req, res) => {
             [userId, party]
         );
 
-        // Update the vote count for the party
-        await client.query(
-            'UPDATE votes SET votes_count = votes_count + 1 WHERE party = $1',
-            [party]
-        );
-
-        res.json({ message: 'Vote successfully recorded' });  // Send confirmation that the vote was successfully recorded
+        res.json({ message: 'Vote successfully recorded' });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error processing vote');
