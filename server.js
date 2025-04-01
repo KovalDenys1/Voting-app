@@ -37,19 +37,29 @@ app.post('/register', async (req, res) => {
         return res.status(400).send('Username and password are required');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
     try {
+        // Check if the username already exists
+        const userCheck = await client.query('SELECT * FROM users WHERE username = $1', [username]);
+
+        if (userCheck.rows.length > 0) {
+            return res.status(400).json({ message: 'Username already exists' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Insert the new user into the database
         const result = await client.query(
             'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username',
             [username, hashedPassword]
         );
+
         res.json({ id: result.rows[0].id, username: result.rows[0].username });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error registering user');
     }
 });
+
 
 // Authorization logic
 app.post('/login', async (req, res) => {
