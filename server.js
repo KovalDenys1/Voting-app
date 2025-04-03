@@ -133,19 +133,35 @@ app.post('/vote', async (req, res) => {
     }
 });
 
-// Get voting results
+// Get voting results with LEFT JOIN to include parties with 0 votes
 app.get('/results', async (req, res) => {
     try {
-        const result = await client.query('SELECT party, COUNT(*) as votes FROM votes GROUP BY party');
-        res.json(result.rows);  // Возвращаем результаты
+        const result = await client.query(`
+            SELECT parties.name AS party, COUNT(votes.party) AS votes
+            FROM parties
+            LEFT JOIN votes ON parties.name = votes.party
+            GROUP BY parties.name
+            ORDER BY votes DESC
+        `);
+        res.json(result.rows);
     } catch (err) {
         console.error(err);
         res.status(500).send('Error fetching results');
     }
 });
 
-
 // Starting the server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
+});
+
+// Get list of parties
+app.get('/parties', async (req, res) => {
+    try {
+        const result = await client.query('SELECT * FROM parties');
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching parties');
+    }
 });

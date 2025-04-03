@@ -10,7 +10,7 @@
     <h1>Welcome to the Voting App</h1>
 
     <!-- Registration -->
-    <div id="register-form">
+    <div id="register-form" style="display: none;">
         <h2>Register</h2>
         <input type="text" id="register-username" placeholder="Username" required />
         <input type="password" id="register-password" placeholder="Password" required />
@@ -19,7 +19,7 @@
     </div>
 
     <!-- Login -->
-    <div id="login-form" style="display: none;">
+    <div id="login-form">
         <h2>Login</h2>
         <input type="text" id="login-username" placeholder="Username" required />
         <input type="password" id="login-password" placeholder="Password" required />
@@ -30,11 +30,9 @@
     <!-- Vote -->
     <div id="vote-form" style="display: none;">
         <h2>Vote</h2>
-        <button onclick="vote('Party A')">Vote for Party A</button>
-        <button onclick="vote('Party B')">Vote for Party B</button>
-        <button onclick="vote('Party C')">Vote for Party C</button>
+        <div id="party-buttons"></div>
         <button onclick="showResults()">View Results</button>
-    </div>
+    </div>    
 
     <!-- Voting Results -->
     <div id="results-form" style="display: none;">
