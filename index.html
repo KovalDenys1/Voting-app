@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voting App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Welcome to the Voting App</h1>
@@ -14,14 +15,16 @@
         <input type="text" id="register-username" placeholder="Username" required />
         <input type="password" id="register-password" placeholder="Password" required />
         <button onclick="register()">Register</button>
+        <button onclick="showLoginForm()">Already have an account? Login</button>
     </div>
 
     <!-- Login -->
-    <div id="login-form">
+    <div id="login-form" style="display: none;">
         <h2>Login</h2>
         <input type="text" id="login-username" placeholder="Username" required />
         <input type="password" id="login-password" placeholder="Password" required />
         <button onclick="login()">Login</button>
+        <button onclick="showRegisterForm()">New here? Register</button>
     </div>
 
     <!-- Vote -->
@@ -30,7 +33,26 @@
         <button onclick="vote('Party A')">Vote for Party A</button>
         <button onclick="vote('Party B')">Vote for Party B</button>
         <button onclick="vote('Party C')">Vote for Party C</button>
+        <button onclick="showResults()">View Results</button>
     </div>
+
+    <!-- Voting Results -->
+    <div id="results-form" style="display: none;">
+        <h2>Voting Results</h2>
+        <table id="results-table">
+            <thead>
+                <tr>
+                    <th>Party</th>
+                    <th>Votes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Results will be dynamically populated here -->
+            </tbody>
+        </table>
+        <button onclick="showVoteForm()">Back to Voting</button>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

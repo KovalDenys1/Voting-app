@@ -76,5 +76,37 @@ async function vote(party) {
 function showVoteForm() {
     document.getElementById('login-form').style.display = 'none';
     document.getElementById('register-form').style.display = 'none';
+    document.getElementById('results-form').style.display = 'none';
     document.getElementById('vote-form').style.display = 'block';
+}
+
+async function showResults() {
+    const response = await fetch('http://localhost:5000/results');
+    const results = await response.json();
+
+    if (response.ok) {
+        const resultsTable = document.getElementById('results-table').getElementsByTagName('tbody')[0];
+        resultsTable.innerHTML = '';  // Clear existing table rows
+
+        results.forEach(result => {
+            const row = resultsTable.insertRow();
+            row.insertCell(0).textContent = result.party;
+            row.insertCell(1).textContent = result.votes;
+        });
+
+        document.getElementById('vote-form').style.display = 'none';
+        document.getElementById('results-form').style.display = 'block';
+    } else {
+        alert('Failed to fetch results');
+    }
+}
+
+function showLoginForm() {
+    document.getElementById('register-form').style.display = 'none';
+    document.getElementById('login-form').style.display = 'block';
+}
+
+function showRegisterForm() {
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('register-form').style.display = 'block';
 }

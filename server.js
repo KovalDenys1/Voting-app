@@ -133,6 +133,18 @@ app.post('/vote', async (req, res) => {
     }
 });
 
+// Get voting results
+app.get('/results', async (req, res) => {
+    try {
+        const result = await client.query('SELECT party, COUNT(*) as votes FROM votes GROUP BY party');
+        res.json(result.rows);  // Возвращаем результаты
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching results');
+    }
+});
+
+
 // Starting the server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
