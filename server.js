@@ -31,9 +31,9 @@ client.connect()
     .catch(err => console.error('Connection error', err.stack));
 
 
-app.get('/', (req, res) => {
-    res.send(path.join(__dirname, 'index.html'));
-});
+    app.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname, 'index.html'));
+    });    
 
 // Registering a new user
 app.post('/register', async (req, res) => {
