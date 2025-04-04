@@ -27,8 +27,8 @@ const client = new Client({
 });
 
 client.connect()
-  .then(() => console.log('Connected to PostgreSQL'))
-  .catch(err => console.error('Connection error', err.stack));
+    .then(() => console.log('Connected to PostgreSQL'))
+    .catch(err => console.error('Connection error', err.stack));
 
 // Registering a new user
 app.post('/register', async (req, res) => {
