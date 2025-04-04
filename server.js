@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { Client } = require('pg');
 const dotenv = require('dotenv');
 const cors = require('cors');
-
+const path = require('path');
 dotenv.config();
 
 const app = express();
