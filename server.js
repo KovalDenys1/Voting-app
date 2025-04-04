@@ -13,6 +13,9 @@ const port = process.env.PORT || 5000;
 // Adding middleware to handle JSON
 app.use(express.json());
 
+
+app.use(express.static(__dirname));
+
 // CORS settings
 app.use(cors({
     origin: 'http://127.0.0.1:5500',  // Make sure to specify the correct port for Live Server
