@@ -12,11 +12,10 @@
     <!-- Registration -->
     <div id="register-form" style="display: none;">
         <h2>Register</h2>
-        <input type="text" id="register-username" placeholder="Enter username" required />
-        <input type="email" id="register-email" placeholder="Enter your email" required />
-        <input type="password" id="register-password" placeholder="Enter password" required />
-        <button onclick="registerUser()">Register</button>
-        <button onclick="showLoginForm()">Back to Login</button>
+        <input type="text" id="register-username" placeholder="Username" required />
+        <input type="password" id="register-password" placeholder="Password" required />
+        <button onclick="register()">Register</button>
+        <button onclick="showLoginForm()">Already have an account? Login</button>
     </div>
 
     <!-- Login -->
@@ -26,15 +25,6 @@
         <input type="password" id="login-password" placeholder="Password" required />
         <button onclick="login()">Login</button>
         <button onclick="showRegisterForm()">New here? Register</button>
-        <button onclick="showForgotPasswordForm()">Forgot Password?</button>
-    </div>
-
-    <!-- Forgot Password -->
-    <div id="forgot-password-form" style="display: none;">
-        <h2>Forgot Password</h2>
-        <input type="email" id="forgot-password-email" placeholder="Enter your email" required />
-        <button onclick="forgotPassword()">Send Reset Email</button>
-        <button onclick="showLoginForm()">Back to Login</button>
     </div>
 
     <!-- Vote -->

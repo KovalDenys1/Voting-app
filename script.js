@@ -1,9 +1,8 @@
 let token = null;
+let selectedParty = null;
 
-// Функция для регистрации пользователя
 async function register() {
     const username = document.getElementById('register-username').value;
-    const email = document.getElementById('register-email').value;
     const password = document.getElementById('register-password').value;
 
     const response = await fetch('http://localhost:5000/register', {
@@ -11,20 +10,18 @@ async function register() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, password }),
     });
 
     const result = await response.json();
 
     if (response.ok) {
         alert('Registration successful');
-        showLoginForm();
     } else {
         alert(result.message || 'Registration failed');
     }
 }
 
-// Функция для входа в систему
 async function login() {
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
@@ -52,29 +49,6 @@ async function login() {
     }
 }
 
-// Функция для восстановления пароля
-async function forgotPassword() {
-    const email = document.getElementById('forgot-password-email').value;
-
-    const response = await fetch('http://localhost:5000/forgot-password', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-        alert('Password reset email sent.');
-        showLoginForm();
-    } else {
-        alert(result.message || 'Failed to send reset email');
-    }
-}
-
-// Функция для голосования
 async function vote(party) {
     if (!token) {
         alert('Please login first');
@@ -99,7 +73,6 @@ async function vote(party) {
     }
 }
 
-// Функция для загрузки списка партий
 async function loadParties() {
     const response = await fetch('http://localhost:5000/parties');
     const parties = await response.json();
@@ -115,30 +88,27 @@ async function loadParties() {
     });
 }
 
-// Функция для отображения формы голосования
 function showVoteForm() {
     document.getElementById('login-form').style.display = 'none';
     document.getElementById('register-form').style.display = 'none';
-    document.getElementById('forgot-password-form').style.display = 'none';
     document.getElementById('results-form').style.display = 'none';
     document.getElementById('vote-form').style.display = 'block';
 
     loadParties();
 }
 
-// Функция для отображения результатов голосования
 async function showResults() {
     const response = await fetch('http://localhost:5000/results');
     const results = await response.json();
 
     if (response.ok) {
         const resultsTable = document.getElementById('results-table').getElementsByTagName('tbody')[0];
-        resultsTable.innerHTML = '';  // Очистка таблицы перед добавлением новых данных
+        resultsTable.innerHTML = '';  // Clear existing table rows
 
         results.forEach(result => {
             const row = resultsTable.insertRow();
             row.insertCell(0).textContent = result.party;
-            row.insertCell(1).textContent = result.votes || 0;  // Показываем 0, если голосов нет
+            row.insertCell(1).textContent = result.votes || 0;  // Display 0 if no votes
         });
 
         document.getElementById('vote-form').style.display = 'none';
@@ -148,21 +118,12 @@ async function showResults() {
     }
 }
 
-// Функции для переключения между формами
 function showLoginForm() {
     document.getElementById('register-form').style.display = 'none';
-    document.getElementById('forgot-password-form').style.display = 'none';
     document.getElementById('login-form').style.display = 'block';
 }
 
 function showRegisterForm() {
     document.getElementById('login-form').style.display = 'none';
-    document.getElementById('forgot-password-form').style.display = 'none';
     document.getElementById('register-form').style.display = 'block';
-}
-
-function showForgotPasswordForm() {
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('register-form').style.display = 'none';
-    document.getElementById('forgot-password-form').style.display = 'block';
 }
