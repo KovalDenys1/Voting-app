@@ -6,7 +6,7 @@ async function register() {
     const password = document.getElementById('register-password').value;
 
     try {
-        const response = await fetch('http://localhost:5000/register', {
+        const response = await fetch('https://voting-app-bcvi.onrender.com/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
@@ -32,7 +32,7 @@ async function login() {
     const password = document.getElementById('login-password').value;
 
     try {
-        const response = await fetch('http://localhost:5000/login', {
+        const response = await fetch('https://voting-app-bcvi.onrender.com/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ async function vote(party) {
     }
 
     try {
-        const response = await fetch('http://localhost:5000/vote', {
+        const response = await fetch('https://voting-app-bcvi.onrender.com/vote', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ async function vote(party) {
 
 
 async function loadParties() {
-    const response = await fetch('http://localhost:5000/parties');
+    const response = await fetch('https://voting-app-bcvi.onrender.com/parties');
     const parties = await response.json();
 
     const partyButtonsDiv = document.getElementById('party-buttons');
@@ -108,7 +108,7 @@ function showVoteForm() {
 }
 
 async function showResults() {
-    const response = await fetch('http://localhost:5000/results');
+    const response = await fetch('https://voting-app-bcvi.onrender.com/results');
     const results = await response.json();
 
     if (response.ok) {
