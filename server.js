@@ -8,7 +8,7 @@ const cors = require('cors');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 10000;
+const port = process.env.PORT || 5000;
 
 // Adding middleware to handle JSON
 app.use(express.json());
@@ -29,6 +29,11 @@ const client = new Client({
 client.connect()
     .then(() => console.log('Connected to PostgreSQL'))
     .catch(err => console.error('Connection error', err.stack));
+
+
+app.get('/', (req, res) => {
+    res.send(path.join(__dirname, 'index.html'));
+});
 
 // Registering a new user
 app.post('/register', async (req, res) => {
@@ -96,7 +101,7 @@ app.post('/login', async (req, res) => {
 // Protected route for voting
 app.post('/vote', async (req, res) => {
     const token = req.headers['authorization']?.split(' ')[1];  // Example: 'Bearer <token>'
-    
+
     if (!token) {
         return res.status(401).send('Access denied');
     }
