@@ -5,20 +5,25 @@ async function register() {
     const username = document.getElementById('register-username').value;
     const password = document.getElementById('register-password').value;
 
-    const response = await fetch('http://localhost:5000/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    });
+    try {
+        const response = await fetch('http://localhost:5000/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+        });
 
-    const result = await response.json();
+        const result = await response.json();
 
-    if (response.ok) {
-        alert('Registration successful');
-    } else {
-        alert(result.message || 'Registration failed');
+        if (response.ok) {
+            // Save the token globally
+            token = result.token;
+            alert('Registration successful! Redirecting to the voting page.');
+            showVoteForm(); // Redirect to voting form
+        } else {
+            alert(result.message || 'Registration failed');
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
     }
 }
 
@@ -55,23 +60,28 @@ async function vote(party) {
         return;
     }
 
-    const response = await fetch('http://localhost:5000/vote', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ party }),
-    });
+    try {
+        const response = await fetch('http://localhost:5000/vote', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ party }),
+        });
 
-    const result = await response.json();
+        const result = await response.json();
 
-    if (response.ok) {
-        alert(result.message || 'Vote successfully recorded');
-    } else {
-        alert(result.message || 'Failed to vote');
+        if (response.ok) {
+            alert(result.message || 'Vote successfully recorded');
+        } else {
+            alert(result.message || 'Failed to vote');
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
     }
 }
+
 
 async function loadParties() {
     const response = await fetch('http://localhost:5000/parties');

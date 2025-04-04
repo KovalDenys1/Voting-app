@@ -33,6 +33,7 @@ client.connect()
 // Registering a new user
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;
+
     if (!username || !password) {
         return res.status(400).send('Username and password are required');
     }
@@ -40,20 +41,22 @@ app.post('/register', async (req, res) => {
     try {
         // Check if the username already exists
         const userCheck = await client.query('SELECT * FROM users WHERE username = $1', [username]);
-
         if (userCheck.rows.length > 0) {
             return res.status(400).json({ message: 'Username already exists' });
         }
 
+        // Hash the password and insert the new user
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Insert the new user into the database
         const result = await client.query(
             'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username',
             [username, hashedPassword]
         );
 
-        res.json({ id: result.rows[0].id, username: result.rows[0].username });
+        // Generate a JWT token
+        const token = jwt.sign({ userId: result.rows[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Respond with the token and username
+        res.json({ token, username: result.rows[0].username });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error registering user');
