@@ -57,6 +57,42 @@ To run this project locally:
 
 ---
 
+## 🧩 Database Schema (PostgreSQL)
+
+Create the required tables before running the app:
+
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL
+);
+
+CREATE TABLE parties (
+  id SERIAL PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL
+);
+
+CREATE TABLE votes (
+  id SERIAL PRIMARY KEY,
+  username TEXT REFERENCES users(username),
+  party TEXT REFERENCES parties(name)
+);
+```
+
+You can add some initial parties like this:
+
+```sql
+INSERT INTO parties (name) VALUES
+('Arbeiderpartiet'),
+('Høyre'),
+('Fremskrittspartiet'),
+('Senterpartiet'),
+('Miljøpartiet De Grønne');
+```
+
+---
+
 ## 📬 Contact
 
 Feel free to connect:
@@ -66,4 +102,4 @@ Feel free to connect:
 
 ---
 
-> Made with passion and curiosity by Denys Koval 🇺🇦 → 🇳🇴
+> Made with passion and curiosity by Denys Koval
