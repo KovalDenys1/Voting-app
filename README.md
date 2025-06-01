@@ -2,8 +2,6 @@
 
 A fullstack web application where users can register, log in, and vote for Norwegian political parties. Results are displayed in real-time.
 
-[**Live demo**](https://voting-app-bcvi.onrender.com/)
-
 ---
 
 ## ⚙️ Features
